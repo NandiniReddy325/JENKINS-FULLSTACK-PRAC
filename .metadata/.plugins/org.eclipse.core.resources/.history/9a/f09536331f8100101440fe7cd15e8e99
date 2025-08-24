@@ -1,0 +1,72 @@
+package com.klef.dev.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import com.klef.dev.entity.Student;
+import com.klef.dev.service.StudentService;
+
+@RestController
+@RequestMapping("/studentcrudoperations")
+@CrossOrigin(origins = "http://localhost:2408") 
+public class StudentController {
+
+    @Autowired
+    private StudentService studentService;
+
+    // Home check
+    @GetMapping("/")
+    public String home() {
+        return "Student API is running...";
+    }
+
+    // Create student
+    @PostMapping
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        Student savedStudent = studentService.addStudent(student);
+        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    }
+
+    // Get all students
+    @GetMapping
+    public ResponseEntity<List<Student>> getAllStudents() {
+        return new ResponseEntity<>(studentService.getAllStudents(), HttpStatus.OK);
+    }
+
+    // Get student by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getStudentById(@PathVariable int id) {
+        Student student = studentService.getStudentById(id);
+        if (student != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Student with ID " + id + " not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Update student
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateStudent(@PathVariable int id, @RequestBody Student student) {
+        Student existing = studentService.getStudentById(id);
+        if (existing != null) {
+            student.setId(id); // ensure ID consistency
+            return new ResponseEntity<>(studentService.updateStudent(student), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot update. Student with ID " + id + " not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Delete student
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
+        Student existing = studentService.getStudentById(id);
+        if (existing != null) {
+            studentService.deleteStudentById(id);
+            return new ResponseEntity<>("Student with ID " + id + " deleted successfully.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Cannot delete. Student with ID " + id + " not found.", HttpStatus.NOT_FOUND);
+        }
+    }
+}

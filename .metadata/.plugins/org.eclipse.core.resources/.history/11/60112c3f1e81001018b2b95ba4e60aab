@@ -1,0 +1,39 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/studentcrudoperations")
+@CrossOrigin(origins = "http://localhost:3000") // adjust if your React port is different
+public class StudentController {
+
+    @Autowired
+    private StudentService service;
+
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return service.getAllStudents();
+    }
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return service.addStudent(student);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable int id, @RequestBody Student student) {
+        student.setId(id);
+        return service.updateStudent(student);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable int id) {
+        service.deleteStudent(id);
+    }
+
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable int id) {
+        return service.getStudentById(id);
+    }
+}

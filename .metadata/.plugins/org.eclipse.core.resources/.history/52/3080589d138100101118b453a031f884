@@ -1,0 +1,37 @@
+package com.klef.dev.controller;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.klef.dev.entity.Student;
+import com.klef.dev.service.StudentService;
+
+@RestController
+@RequestMapping("/students")
+@CrossOrigin(origins = "http://localhost:3000") // allow frontend
+public class StudentController {
+
+    @Autowired
+    private StudentService service;
+
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return service.getAllStudents();
+    }
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return service.addStudent(student);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable int id, @RequestBody Student student) {
+        return service.updateStudent(id, student);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteStudent(@PathVariable int id) {
+        service.deleteStudent(id);
+    }
+}
